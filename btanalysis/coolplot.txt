@@ -1,0 +1,49 @@
+import numpy as np; np.random.seed(43)
+import matplotlib.pyplot as plt
+
+t = np.linspace(0,100,301)
+x = np.cumsum(np.random.randn(len(t)))
+
+lower,upper = 0,8
+
+fig, ax=plt.subplots()
+
+ax.axhline(lower, color="crimson")
+ax.axhline(upper, color="limegreen")
+
+
+def insertzeros(t, x, zero=0):
+    ta = []
+    positive = (x-zero) > 0
+    ti = np.where(np.bitwise_xor(positive[1:], positive[:-1]))[0]
+    for i in ti:
+        y_ = np.sort(x[i:i+2])
+        z_ = t[i:i+2][np.argsort(x[i:i+2])]
+        t_ = np.interp(zero, y_, z_)
+        ta.append( t_ )
+    tnew = np.append( t, np.array(ta) )
+    xnew = np.append( x, np.ones(len(ta))*zero )
+    xnew = xnew[tnew.argsort()]
+    tnew = np.sort(tnew)
+    return tnew, xnew
+
+t1,x1 = insertzeros(t,x, zero=lower)
+t1,x1 = insertzeros(t1,x1, zero=upper)
+
+xm = np.copy(x1)
+xm[(x1 < lower) | (x1 > upper)] = np.nan        
+ax.plot(t1,xm, color="C0")
+
+xl = np.copy(x1)
+xl[(x1 > lower)] = np.nan        
+ax.plot(t1,xl, color="crimson")
+#
+xu = np.copy(x1)
+xu[(xu < upper)] = np.nan        
+ax.plot(t1,xu, color="limegreen")
+
+ax.fill_between(t, x, lower, where=(x <= lower), facecolor="crimson", interpolate=True, alpha=0.5)
+ax.fill_between(t, x, upper, where=(x >= upper), facecolor="limegreen", interpolate=True, alpha=0.5)
+
+
+plt.show()
