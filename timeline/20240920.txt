@@ -1,0 +1,1 @@
+forward: different ways of measuring momentum (bands, chameleon indicators), time downsample, jump, industry/arbitrary data filtering, (arbitrary balancing), multiple streams (arbitrary data merging logic)
